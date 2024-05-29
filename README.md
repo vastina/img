@@ -1,0 +1,2 @@
+## bmp
+For more details about bmp details, you can see [bmp.archive](https://web.archive.org/web/20080912171714/http://www.fortunecity.com/skyscraper/windows/364/bmpffrmt.html) and [code archived by PandoraEartha](https://zhuanlan.zhihu.com/p/698234015)
