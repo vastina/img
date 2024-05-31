@@ -13,8 +13,11 @@ set(CMAKE_BUILD_TYPE Debug)
 set(project_dir "./code")
 include_directories("${project_dir}/include")
 
+find_package(ZLIB)
 file(GLOB SOURCES "${project_dir}/${project_name}/*.cpp")
 add_library(${project_name} STATIC ${SOURCES})
+target_link_libraries(${project_name} ZLIB::ZLIB)
+
 file(GLOB SOURCES_BMP "${project_dir}/${project2}/*.cpp")
 add_library(${project2} STATIC ${SOURCES_BMP})
 
