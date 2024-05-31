@@ -11,3 +11,5 @@ test/
 *.s
 *.o
 *.out
+*.bmp
+*.png

@@ -110,5 +110,9 @@ void bmp::GenRandomBMP( bool randomname )
   write();
 }
 
+void bmp::setIndex(u32 index, u8 val){
+  bgrdata[index] = val;
+}
+
 }; // namespace bmp
 }; // namespace vastina

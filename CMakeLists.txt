@@ -24,3 +24,12 @@ target_link_libraries(main.out ${project2})
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/testcase)
+
+find_package(Python COMPONENTS Interpreter Development)
+find_package(pybind11 CONFIG)
+
+pybind11_add_module(
+  vas_${project2}
+  "${project_dir}/bind/${project2}.cpp"
+  ${SOURCES_BMP}
+)
