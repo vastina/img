@@ -1,4 +1,5 @@
 #include "bmp/bmp.hpp"
+#include <cstdio>
 
 int main( int argc, char** argv )
 {
@@ -41,9 +42,10 @@ int main( int argc, char** argv )
     {
       bmp b {};
       b.filename = "test/hhalf.bmp";
-      b.resize( 512, 512 );
-      constexpr unsigned rr1 = 511 * 511 - 512;
-      constexpr unsigned rr2 = 511 * 511 + 512;
+      constexpr unsigned wh { BUFSIZ };
+      b.resize( wh, wh );
+      constexpr unsigned rr1 = ( wh - 1 ) * ( wh - 1 ) - wh * 16;
+      constexpr unsigned rr2 = ( wh - 1 ) * ( wh - 1 ) + wh * 16;
       for ( unsigned i = 0; i < b.line; i++ ) {
         unsigned offset = i * b.column * 3;
         for ( unsigned j = 0; j < b.column; j++ ) {

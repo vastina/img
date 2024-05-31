@@ -18,11 +18,6 @@ add_library(${project_name} STATIC ${SOURCES})
 file(GLOB SOURCES_BMP "${project_dir}/${project2}/*.cpp")
 add_library(${project2} STATIC ${SOURCES_BMP})
 
-add_executable(main.out ${project_dir}/main.cpp)
-target_link_libraries(main.out ${project_name})
-target_link_libraries(main.out ${project2})
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/)
-
 add_subdirectory(${CMAKE_SOURCE_DIR}/testcase)
 
 find_package(Python COMPONENTS Interpreter Development)
