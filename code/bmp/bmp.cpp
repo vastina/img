@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <fcntl.h>
+#include <fstream>
 #include <functional>
 #include <random>
 #include <string>
@@ -12,10 +13,10 @@
 namespace vastina {
 namespace bmp {
 
-std::random_device rd {};
-std::mt19937 mt( rd() );
-std::uniform_int_distribution<int> dist( 0, 1000000 );
-auto rnd { std::bind( dist, mt ) };
+static std::random_device rd {};
+static std::mt19937 mt( rd() );
+static std::uniform_int_distribution<int> dist( 0, 1000000 );
+static auto rnd { std::bind( dist, mt ) };
 
 static inline std::string_view GenRandomStr()
 {
@@ -31,67 +32,66 @@ static inline std::string_view GenRandomStr()
   return { buf.begin() + start, len };
 }
 
-void bmp::resize(u32 ln, u32 col){
+void bmp::resize( u32 ln, u32 col )
+{
   line = ln;
   column = col;
-  bgrdata.resize(ln*col*3);
+  bgrdata.resize( ln * col * 3 );
 }
 
 void bmp::write()
 {
-  int fd = -1;
   if ( !filename.ends_with( ".bmp" ) )
     filename.append( ".bmp" );
-  fd = ::open( filename.data(), O_CREAT | O_WRONLY );
+
+  char buf[57] { 'B', 'M' };
   {
-    // file head
     u32 column_len = column * 3;
     if ( column_len & 3 )
       column_len = ( ( column_len >> 2 ) + 1 ) << 2;
     u32 file_len = 56 /*head*/ + ( line * column_len );
-
-    char buf[5] { 'B', 'M', 0, 0, 0 };
-    ::write( fd, (void*)buf, 2 ); // 0
-    *( (u32*)buf ) = file_len;
-    ::write( fd, (void*)buf, 4 ); // 2
-    *( (u32*)buf ) = 0;
-    ::write( fd, (void*)buf, 4 ); // 6
-    *( (u32*)buf ) = 56;          // after 56 bit lies color data, for align, take 56
-    ::write( fd, (void*)buf, 4 ); // 10
-    *( (u32*)buf ) = 40;          // filehead length
-    ::write( fd, (void*)buf, 4 ); // 14
-    *( (i32*)buf ) = column;
-    ::write( fd, (void*)buf, 4 ); // 18
-    *( (i32*)buf ) = line;
-    ::write( fd, (void*)buf, 4 ); // 22
-    *( (u16*)buf ) = 1;
-    ::write( fd, (void*)buf, 2 ); // 26
-    *( (u16*)buf ) = 24;          // 8*3, rgb length
-    ::write( fd, (void*)buf, 2 ); // 28
-    *( (u32*)buf ) = 0;
-    ::write( fd, (void*)buf, 4 ); // 30
-    *( (u32*)buf ) = 0;
-    ::write( fd, (void*)buf, 4 ); // 34
-    *( (i32*)buf ) = 0;
-    ::write( fd, (void*)buf, 4 ); // 38
-    *( (i32*)buf ) = 0;
-    ::write( fd, (void*)buf, 4 ); // 42
-    *( (u32*)buf ) = 0;
-    ::write( fd, (void*)buf, 4 ); // 46
-    *( (u32*)buf ) = 0;
-    ::write( fd, (void*)buf, 4 ); // 50
-    *( (u16*)buf ) = 0;
-    ::write( fd, (void*)buf, 2 ); // 54
+    // file head
+    *( (u32*)( buf + 2 ) ) = file_len;
+    *( (u32*)( buf + 6 ) ) = 0;
+    *( (u32*)( buf + 10 ) ) = 56; // after 56 bit lies color data, for align, take 56
+    *( (u32*)( buf + 14 ) ) = 40; // filehead length
+    *( (i32*)( buf + 18 ) ) = column;
+    *( (i32*)( buf + 22 ) ) = line;
+    *( (u16*)( buf + 26 ) ) = 1;
+    *( (u16*)( buf + 28 ) ) = 24; // 8*3, rgb length
+    *( (u64*)( buf + 30 ) ) = 0;
+    *( (u64*)( buf + 38 ) ) = 0;
+    *( (u64*)( buf + 46 ) ) = 0;
+    *( (u16*)( buf + 54 ) ) = 0;
   }
 
+// if not unix, just use stl...
+#ifdef __unix__
+  int fd = -1;
+  fd = ::open( filename.data(), O_CREAT | O_WRONLY );
+  ::write( fd, (void*)buf, 56 );
+#else
+  std::fstream fs;
+  fs.open( filename, std::ios::in | std::ios::out | std::ios::app );
+  fs.write( buf, 56 );
+#endif
   u32 BRGindex { 0u };
-  u32 realdatesize = bgrdata.size();
-  for ( u32 i = 0; i < line && BRGindex <= realdatesize; i++ ) {
+  u32 realdatasize = bgrdata.size();
+  for ( u32 i = 0; i < line && BRGindex <= realdatasize; i++ ) {
+#ifdef __unix__
     ::write( fd, bgrdata.data() + BRGindex, column * 3 );
+#else
+    fs.write( (const char*)( bgrdata.data() + BRGindex ), column * 3 );
+#endif
     BRGindex += column * 3;
   }
+
+#ifdef __unix__
   ::close( fd );
   ::chmod( filename.data(), 0b0110100100 ); // 0644
+#else
+  fs.close();
+#endif
 }
 
 void bmp::GenRandomBMP( bool randomname )

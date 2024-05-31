@@ -9,6 +9,7 @@ namespace vastina {
 
 using std::string;
 using std::string_view;
+using u64 = std::uint64_t;
 using u32 = std::uint32_t;
 using i32 = std::int32_t;
 using u16 = std::uint16_t;
@@ -19,18 +20,18 @@ namespace bmp {
 
 struct bmp
 {
-  string filename; // 文件名
-  u32 line;        // 行数
-  u32 column;      // 列数
-  std::basic_string<u8> bgrdata;  // rgb reverse
+  string filename;               // 文件名
+  u32 line;                      // 行数
+  u32 column;                    // 列数
+  std::basic_string<u8> bgrdata; // rgb reverse
 
-  void resize(u32, u32);
+  void resize( u32, u32 );
   void GenRandomBMP( bool );
   void write();
   void read( const string_view& path );
 };
 
-}
-}
+}; // namespace bmp
+}; // namespace vastina
 
 #endif
