@@ -29,8 +29,6 @@ struct png
   pngConfig config {};
   u32 width;
   u32 height;
-
-private:
   vector<u8> data;
 
 public:

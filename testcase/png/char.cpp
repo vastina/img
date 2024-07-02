@@ -32,15 +32,6 @@ int main()
     ::system( "rm -f test/char.png" );
     using namespace vastina::png;
     auto p { png( "test/char.png", bitmap->width, bitmap->rows ) };
-    // unsigned index = 0;
-    // for(unsigned y = 0; y < bitmap->rows; ++y) {
-    //   p.data[index++] = p.config.filter_method;
-    //   for(unsigned x = 0; x < bitmap->width; ++x) {
-    //     p.data[index++] = bitmap->buffer[y * bitmap->width + x];
-    //     p.data[index++] = bitmap->buffer[y * bitmap->width + x];
-    //     p.data[index++] = bitmap->buffer[y * bitmap->width + x];
-    //   }
-    // }
     for ( unsigned y = 0; y < bitmap->rows; ++y ) {
       for ( unsigned x = 0; x < bitmap->width; ++x ) {
         auto val { bitmap->buffer[y * bitmap->width + x] };

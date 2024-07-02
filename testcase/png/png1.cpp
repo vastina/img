@@ -11,7 +11,7 @@ int main()
     ::system( "rm -f test/blue.png" );
     {
       auto p { png( "test/black.png", 256, 256 ) };
-      std::fill( p.getdata().begin(), p.getdata().end(), (unsigned char)0 );
+      std::fill( p.data.begin(), p.data.end(), (unsigned char)0 );
       p.write();
     }
     {

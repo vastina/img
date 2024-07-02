@@ -44,9 +44,9 @@ int main()
     using namespace vastina::png;
     auto p { png( "test/vastina.png", wa, h ) };
     for ( int i = 0; i < 7; i++ ) {
-      for ( unsigned y = 0; y < bitmaps[i]->rows; y++ )
+      for ( unsigned y = h - bitmaps[i]->rows, yi = 0; y < h; y++, yi++ )
         for ( unsigned x = 0; x < bitmaps[i]->width; x++ ) {
-          auto val { bitmaps[i]->buffer[y * bitmaps[i]->width + x] };
+          auto val { bitmaps[i]->buffer[yi * bitmaps[i]->width + x] };
           p.setIndex( x + w[i], y, { val, val, val } );
         }
     }
