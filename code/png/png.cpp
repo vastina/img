@@ -39,6 +39,11 @@ void png::resize(u32 h, u32 w, u8 scale = 3){
 }
 
 void png::write() {
+  {
+    for (unsigned y = 0; y < height; y++) 
+      data[y * width * 3 + y] = config.filter_method;
+  }
+
   if ( !filename.ends_with( ".png" ) )
     filename.append( ".png" );
 

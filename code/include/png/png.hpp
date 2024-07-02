@@ -14,32 +14,44 @@ struct pngConfig{
   u8 interlace_method {0};    GSetter(interlace_method)
 };
 
+struct RGB {
+  u8 r;
+  u8 g;
+  u8 b;
+};
+
 struct png {
   string filename;
+  pngConfig config {};
   u32 width;
   u32 height;
+private:
   vector<u8> data;
-  pngConfig config {};
-
-  png(const string&path, u32 w, u32 h, pngConfig cfig = {}) :
-      filename(path)
+  
+public:
+  png(const string&path, u32 w, u32 h, pngConfig cfig = {})
+    : filename(path)
+    , config(cfig)
     , width(w)
     , height(h)
     , data(w*h*3+h)
-    , config(cfig)
   {}
   void resize( u32, u32, u8 );
   void GenRandomPNG( bool );
   void write();
   void read( const string_view& path );
-  inline void setIndex(u32 x, u32 y, u8 offset, u8 val){
-    data[(y+1)+y*width+x+offset] = val;
+  inline void setIndex(u32 x, u32 y, RGB rgb){
+    u32 index = (y * width + x) * 3 + y;
+    data[index+1]   = rgb.r;
+    data[index+2] = rgb.g;
+    data[index+3] = rgb.b;
   }
 
   GSetter(filename)
   GSetter(width)
   GSetter(height)
   GSetter(config)
+  GSetter(data)
 };
 
 }; // namespace png
