@@ -14,16 +14,13 @@ struct bmp
   u32 column;                    // 列数
   std::basic_string<u8> bgrdata; // rgb reverse
 
-  GSetter(filename)
-  GSetter(bgrdata)
-  GSetter(line)
-  GSetter(column)
+  GSetter( filename ) GSetter( bgrdata ) GSetter( line ) GSetter( column )
 
-  void resize( u32, u32 );
+    void resize( u32, u32 );
   void GenRandomBMP( bool );
   void write();
   void read( const string_view& path );
-  void setIndex(u32,  u8);
+  void setIndex( u32, u8 );
 };
 
 }; // namespace bmp

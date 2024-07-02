@@ -10,6 +10,7 @@ test/
 *.S
 *.s
 *.o
+*.so
 *.out
 *.bmp
 *.png
