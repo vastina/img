@@ -41,5 +41,7 @@ int main()
     p.write();
   }
 
+  FT_Done_FreeType( library );
+  FT_Done_Face( face );
   return 0;
 }
