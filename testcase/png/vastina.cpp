@@ -53,8 +53,8 @@ int main()
     p.write();
   }
 
-  FT_Done_FreeType( library );
   for( int i = 0; i < 7; i++ )
     FT_Done_Face( face[i] );
+  FT_Done_FreeType( library );
   return 0;
 }

@@ -73,11 +73,22 @@ void png::write()
   }
   {
     // todo, config
-    std::vector<uint8_t> compressed_data( ::compressBound( data.size() ) );
-    auto compressed_size { compressed_data.size() };
-    ::compress( compressed_data.data(), &compressed_size, data.data(), data.size() );
-    compressed_data.resize( compressed_size );
-    write_chunk( fs, "IDAT", compressed_data );
+    std::vector<uint8_t> compressed_data( ::compressBound( data.size() ) + 4 );
+    {
+      constexpr char idat_signature[4] = { 'I', 'D', 'A', 'T' };
+      compressed_data[0] = idat_signature[0];
+      compressed_data[1] = idat_signature[1];
+      compressed_data[2] = idat_signature[2];
+      compressed_data[3] = idat_signature[3];
+    }
+    auto compressed_size { compressed_data.size() - 4 };
+    ::compress( compressed_data.data() + 4, &compressed_size, data.data(), data.size() );
+    compressed_data.resize( compressed_size + 4 );
+    
+    write_uint32( fs, compressed_size );
+    fs.write( reinterpret_cast<const char*>( compressed_data.data() ), compressed_size + 4 );
+    uint32_t crc = calculate_crc32( compressed_data );
+    write_uint32( fs, crc );
   }
   {
     write_chunk( fs, "IEND", {} );
