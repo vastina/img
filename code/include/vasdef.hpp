@@ -24,7 +24,7 @@ using u8 = unsigned char;
   }                                                                                                                \
   void set##member( const decltype( member )& _##member )                                                          \
   {                                                                                                                \
-    member = _##member;                                                                                            \
+    (member) = _##member;                                                                                            \
   }
 
 }

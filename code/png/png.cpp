@@ -6,10 +6,10 @@
 namespace vastina {
 namespace png {
 
-static inline u32 calculate_crc32( const std::vector<uint8_t>& data )
+namespace { inline u32 calculate_crc32( const std::vector<uint8_t>& data )
 {
   return crc32( 0L, reinterpret_cast<const Bytef*>( data.data() ), data.size() );
-}
+}}
 
 void write_uint32( std::ofstream& file, uint32_t value )
 {

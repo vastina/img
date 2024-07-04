@@ -13,7 +13,9 @@ int main()
   }
   const char* font_path = "./test/KAISG.ttf";
 
-  unsigned wa = 0, h = 0, w[7] = { 0 };
+  unsigned wa = 0;
+  unsigned h = 0;
+  unsigned w[7] = { 0 };
 
   FT_Face face[7];
   const char name[] { "vastina" };

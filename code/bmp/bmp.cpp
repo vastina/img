@@ -13,12 +13,13 @@
 namespace vastina {
 namespace bmp {
 
-static std::random_device rd {};
-static std::mt19937 mt( rd() );
-static std::uniform_int_distribution<int> dist( 0, 1000000 );
-static auto rnd { std::bind( dist, mt ) };
+namespace {
+std::random_device rd {};
+std::mt19937 mt( rd() );
+std::uniform_int_distribution<int> dist( 0, 1000000 );
+auto rnd { std::bind( dist, mt ) };
 
-static inline std::string_view GenRandomStr()
+inline std::string_view GenRandomStr()
 {
   constexpr static std::string_view const nicestr {
     "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()-_=+{}[]:;\"'\\?/,.<>" };
@@ -30,6 +31,7 @@ static inline std::string_view GenRandomStr()
   int start = rnd() % ( buf.size() - 1 );
   unsigned long len = std::max( rnd() % ( buf.size() - start ), 1UL );
   return { buf.begin() + start, len };
+}
 }
 
 void bmp::resize( u32 ln, u32 col )
